@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+
+  private appStartupTime = new Date();
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  index() {
+    const { appStartupTime } = this;
+    return { appStartupTime };
   }
 }

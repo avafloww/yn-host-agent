@@ -10,6 +10,10 @@ export class SanitizePipe implements PipeTransform {
           throw new BadRequestException('Invalid characters in string');
         }
       }
+    } else if (metadata.type === 'param' && typeof value === 'string') {
+      if (value.match(/([^a-z0-9\-]+)/gi)) {
+        throw new BadRequestException('Invalid characters in string');
+      }
     }
 
     return value;

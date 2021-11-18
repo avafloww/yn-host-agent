@@ -12,7 +12,7 @@ export class DisksController {
 
   @Post()
   async create(@Body() createDiskDto: CreateDiskDto) {
-    this.log.log(`Cloning disk from template '${createDiskDto.template}' to '${createDiskDto.name}'`);
+    this.log.log(`Received clone disk request: template '${createDiskDto.template}' -> '${createDiskDto.name}'`);
     return await this.disksService.create(createDiskDto);
   }
 }
