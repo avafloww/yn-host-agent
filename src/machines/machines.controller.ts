@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Logger } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Logger, HttpCode, HttpStatus } from '@nestjs/common';
 import { MachinesService } from './machines.service';
 import { CreateMachineDto } from './dto/create-machine.dto';
 
@@ -19,5 +19,26 @@ export class MachinesController {
   async inspect(@Param() { nameOrId }) {
     this.log.log(`Received inspect request for ${nameOrId}`);
     return await this.machinesService.inspect(nameOrId);
+  }
+
+  @Post(':nameOrId/start')
+  @HttpCode(HttpStatus.OK)
+  async start(@Param() { nameOrId }) {
+    this.log.log(`Received start request for ${nameOrId}`);
+    return await this.machinesService.start(nameOrId);
+  }
+
+  @Post(':nameOrId/stop')
+  @HttpCode(HttpStatus.OK)
+  async stop(@Param() { nameOrId }) {
+    this.log.log(`Received stop request for ${nameOrId}`);
+    return await this.machinesService.stop(nameOrId);
+  }
+
+  @Post(':nameOrId/restart')
+  @HttpCode(HttpStatus.OK)
+  async restart(@Param() { nameOrId }) {
+    this.log.log(`Received restart request for ${nameOrId}`);
+    return await this.machinesService.restart(nameOrId);
   }
 }

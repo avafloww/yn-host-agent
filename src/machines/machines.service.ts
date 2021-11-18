@@ -1,4 +1,4 @@
-import { BadRequestException, HttpCode, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { exec } from '../exec';
 import { Machine } from './entities/machine.entity';
@@ -7,7 +7,6 @@ import { parseStringPromise as parseString } from 'xml2js';
 @Injectable()
 export class MachinesService {
 
-  @HttpCode(HttpStatus.CREATED)
   async create({ template, name }: CreateMachineDto) {
     const { stdout, stderr } = await exec(`virt-clone -o ${template} -n ${name} --auto-clone`);
     if (stderr?.trim().length) {
@@ -26,6 +25,33 @@ export class MachinesService {
       macAddress: xml.domain.devices[0].interface[0].mac[0]['$']['address'],
       displayAddress: await this.getDisplayAddress(name)
     };
+  }
+
+  async start(name: string) {
+    const { stdout, stderr } = await exec(`virsh start ${name}`);
+    if (stderr?.trim().length) {
+      throw new BadRequestException(stderr?.trim());
+    }
+
+    return { message: stdout?.trim() };
+  }
+
+  async stop(name: string) {
+    const { stdout, stderr } = await exec(`virsh destroy ${name}`);
+    if (stderr?.trim().length) {
+      throw new BadRequestException(stderr?.trim());
+    }
+
+    return { message: stdout?.trim() };
+  }
+
+  async restart(name: string) {
+    const { stdout, stderr } = await exec(`virsh reset ${name}`);
+    if (stderr?.trim().length) {
+      throw new BadRequestException(stderr?.trim());
+    }
+
+    return { message: stdout?.trim() };
   }
 
   private async getXml(name: string) {
