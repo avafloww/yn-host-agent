@@ -7,13 +7,13 @@ import { parseStringPromise as parseString } from 'xml2js';
 @Injectable()
 export class MachinesService {
 
-  async create({ template, name }: CreateMachineDto) {
+  async create({ template, name }: CreateMachineDto): Promise<Machine> {
     const { stdout, stderr } = await exec(`virt-clone -o ${template} -n ${name} --auto-clone`);
     if (stderr?.trim().length) {
       throw new BadRequestException(stderr?.trim());
     }
 
-    return { message: stdout?.trim() };
+    return await this.inspect(name);
   }
 
   async inspect(name: string): Promise<Machine> {
