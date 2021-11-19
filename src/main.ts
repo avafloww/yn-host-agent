@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ApiKeyGuard } from './auth/api-key.guard';
 import { SanitizePipe } from './sanitize.pipe';
 
-async function bootstrap() {
+async function bootstrapApp() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new SanitizePipe());
@@ -11,4 +11,9 @@ async function bootstrap() {
 
   await app.listen(4001);
 }
-bootstrap();
+
+if (process.argv.length > 2) {
+  require('./console');
+} else {
+  bootstrapApp();
+}
