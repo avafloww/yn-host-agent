@@ -2,9 +2,13 @@ import { Command, Console } from 'nestjs-console';
 import * as fs from 'fs/promises';
 import * as mkdirp from 'mkdirp';
 import { exec } from './exec';
+import { ConfigService } from '@nestjs/config';
 
 @Console()
 export class ConsoleService {
+
+  constructor(private readonly configService: ConfigService) {
+  }
 
   @Command({
     command: 'install',
@@ -29,6 +33,7 @@ export class ConsoleService {
     
     [Service]
     Type=simple
+    Environment="API_KEY=${this.configService.get<string>('API_KEY')}"
     ExecStart=${destinationDir}/yn-host-agent
     Restart=always
     
